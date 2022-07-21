@@ -1,3 +1,3 @@
 # IoT-Lora
 
-## Program se nalazi u direktoriju waspmote/examples/04. Software/AirQualitySensor
+## Program za kontrolu kvalitete zraka "AirQualitySensor.pde" nalazi se u direktoriju waspmote/examples/04. Software/AirQualitySensor
