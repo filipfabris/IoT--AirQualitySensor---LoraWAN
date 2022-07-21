@@ -3,7 +3,6 @@
 #include <WaspPM.h>
 #include <WaspLoRaWAN.h>
 
-bmeGasesSensor  bme;
 
 uint8_t socket = SOCKET0;
 
@@ -20,10 +19,15 @@ uint8_t Array[100];
 uint8_t error;
 uint8_t error_config = 0;
 
+
+bmeGasesSensor  bme;
+
 Gas NO2(SOCKET_A);
 Gas CO(SOCKET_B);
 Gas O3(SOCKET_C);
 Gas SO2(SOCKET_F);
+
+
 float temperature;
 float humidity;
 float pressure;
@@ -31,6 +35,8 @@ float concentration_NO2;
 float concentration_CO;
 float concentration_O3;
 float concentration_SO2;
+
+
 char info_string[61];
 char serial_number[61];
 int status;
@@ -103,26 +109,16 @@ void SendData(int PORT, char data[], int data_length){
 
 void setup()
 {
-  USB.ON();
-  NO2.ON();
-  CO.ON();
-  O3.ON();
-  SO2.ON();
+
   USB.println(F("Frame Utility Example for Gases Pro Sensor Board"));
-  USB.println(F("Electrochemical gas sensor example"));
   
   USB.println(F("LoRaWAN example - Send Unconfirmed packets (ACK)\n"));
-
-
-  
-
 
   USB.println(F("Particle Matter Sensor example"));
 
    // switch on sensor
    status = PM.ON();
    
-
    // check answer
    if (status == 1)
    {
@@ -348,6 +344,13 @@ void loop()
 
   bme.ON();
 
+  USB.ON();
+  NO2.ON();
+  CO.ON();
+  O3.ON();
+  SO2.ON();
+
+  PWR.deepSleep("00:00:02:00", RTC_OFFSET, RTC_ALM1_MODE1, ALL_OFF);
 
 
   ///////////////////////////////////////////
@@ -460,8 +463,6 @@ void loop()
   USB.println();
   
 
-  
-  //int length2 = sizeof(Array)/sizeof(Array[0]);
   char copy[data_len];
   for(int i = 0;i < data_len;i++){
     copy[i] = (char)Array[i];
@@ -497,20 +498,18 @@ void loop()
   
   USB.println();
 
-  //int len = sizeof(data2)/sizeof(data2[0]);
+
   char hex_str[(data_len*2)+1];
-    
   string2hexString(data2, hex_str);
 
-   int counter = 0;
-   
-  while(hex_str[counter] != '\0'){
+   int counter = 0;   
+   while(hex_str[counter] != '\0'){
     counter++;
    }
 
-   char final_hex[counter];
 
     counter = 0;
+   char final_hex[counter];
     while(hex_str[counter] != '\0'){
       final_hex[counter] = hex_str[counter];
       counter++;
@@ -519,13 +518,11 @@ void loop()
   
   USB.println();
   USB.print("Hex data: ");
-  
    for(int i = 0; i<counter; i++){
     USB.print(final_hex[i]);
    }
    USB.println();
   
-
   delay(2000);
 
 
@@ -548,10 +545,12 @@ void loop()
 
 
 
-  //////////////////////////////////////////////
-  // 2. Join network
-  //////////////////////////////////////////////
+    //////////////////////////////////////////////
+    // 2. Join network
+    //////////////////////////////////////////////
 
+
+    //void SendData() is used in 5. Create ASCII frame
      
 
     //////////////////////////////////////////////
@@ -636,10 +635,10 @@ void loop()
   PM.OFF();
 
   // Go to deepsleep
-  // After 30 seconds, Waspmote wakes up thanks to the RTC Alarm
+  // After 3 minutes, Waspmote wakes up thanks to the RTC Alarm
 
   USB.println(F("Go to deep sleep mode..."));
-  PWR.deepSleep("00:00:05:00", RTC_OFFSET, RTC_ALM1_MODE1, ALL_OFF);
+  PWR.deepSleep("00:00:03:00", RTC_OFFSET, RTC_ALM1_MODE1, ALL_OFF);
   USB.ON();
   USB.println(F("Wake up!!\r\n"));
 
