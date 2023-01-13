@@ -509,7 +509,7 @@ uint8_t WaspLoRaWAN::ON(uint8_t socket)
     // power on the socket
     PWR.powerSocket(_uart, HIGH);
 
-	delay(500);
+	delay(1000);
 	error = check();
 	return error;
 }
